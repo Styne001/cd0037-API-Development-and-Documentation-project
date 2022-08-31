@@ -8,7 +8,7 @@ Trivia App offers interesting gaming experience for playing the trivia game with
 ## Getting Started
 
 ### Pre-requisites and Local Development
-- Developers who wish to use this project should have Python3, pip and node installed on their local machines. Here is a link to download Python `www.python.org/downloads`.
+- Developers who wish to use this project should have Python3, pip and node installed on their local machines. Here is a link to download Python3 `www.python.org/downloads`.
 
 ### Backend
 - From the backend folder run pip install requirements.txt to get all the required packages in the requirements file.
@@ -415,6 +415,8 @@ Here are some status codes;
 
 
 ### Authors
+Sudhanshu Kulshrestha
+Sarah Maris
 UAnjali
 Celestine Okonkwo
 
