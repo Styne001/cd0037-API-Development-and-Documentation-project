@@ -87,6 +87,7 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
         current_questions = paginate_questions(request, selection)
         query_categories = Category.query.all()
         categories = {category.id: category.type for category in query_categories}
+        
         # If no questions is found abort and show error 404
         if len(current_questions) == 0:
             abort(404)
@@ -210,20 +211,23 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
     @app.route('/categories/<int:cat_id>/questions')
     @cross_origin()
     def questionsByCategory(cat_id):
-        # Get categories by their id
-        query_category = Category.query.filter(Category.id==cat_id).one_or_none()
-        if query_category is None:
-            abort(404)
+        try:
+            # Get categories by their id
+            query_category = Category.query.filter(Category.id==cat_id).one_or_none()
+            if query_category is None:
+                abort(404)
 
-        selection = Question.query.join(Category, Question.category==Category.id).filter(Question.category==cat_id)
-        #paginate selection
-        category_question = paginate_questions(request, selection)
-        # return statement for questions in a category
-        return jsonify({
-                'success': True,
-                'questions': category_question,
-                'total_questions': len(selection.all())
-            })
+            selection = Question.query.join(Category, Question.category==Category.id).filter(Question.category==cat_id)
+            #paginate selection
+            category_question = paginate_questions(request, selection)
+            # return statement for questions in a category
+            return jsonify({
+                    'success': True,
+                    'questions': category_question,
+                    'total_questions': len(selection.all())
+                })
+        except Exception:
+            abort(422)
 
     """
     @TODO:
@@ -239,36 +243,37 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
   
     @app.route('/quizzes', methods=['POST'])
     @cross_origin()
-    def play_quiz():      
-        body = request.get_json()   
-        # Get category and previous questions
-        category = body.get('quiz_category')
-        previous_questions = body.get('previous_questions')
+    def quiz_game():
+        try:
+            body = request.get_json()
+            previous_questions = body.get('previous_questions')
+            quiz_category = body.get('quiz_category')
 
+            if quiz_category is None:
+                selection = Question.query.all()
+            # Get all questions not in previous questions if no category is selected
+            elif quiz_category['id'] == 0:
+                selection = Question.query.filter(Question.id.notin_(previous_questions)).all()
+            # If Category is selected, get questions in that category that is not in previous questions
+            else:
+                selection = Question.query.filter(Question.category==quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
+            # This selects a question at random
+            random_question = random.choice(selection)
+            # format selected question
+            question = random_question.format()
+            # If previous_questions does not exist, create an empty list for previous_questions
+            if previous_questions is None:
+                previous_questions = []
+
+            return jsonify({
+                'success': True,
+                'quiz_category': quiz_category,
+                'previous_questions': previous_questions,
+                'question': question
+            })
         
-        if category and previous_questions is None:
-            # If there are no previous questions and category get first category
-            category = Category.query.order_by(Category.id).first()
-            questions = Question.query.filter(Question.category==category.id).all()
-        else:
-            # Get questions of same category
-            questions =Question.query.filter(category==Question.category).all()
-        # total questions in the category
-        #total_questions = len(questions)
-        # Get random questions that is not in previous_questions
-        current_questions = questions[random.choice(questions)] not in previous_questions
-
-        return jsonify({
-            'success': True,
-            'question': current_questions,
-            'category': category,
-            'total_questions': len(current_questions)
-        })
-
-
-
-
-
+        except Exception:
+            abort(422)
 
     """
     @TODO:

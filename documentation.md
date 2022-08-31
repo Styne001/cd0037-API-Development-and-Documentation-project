@@ -382,4 +382,19 @@ Here are some error codes;
     "total_questions": 3
 }
 ```
+
+#### POST /quizzes
+- General:
+    - Retrieves quiz question, category of the quiz questions and previous questions from selected category
+- Sample: `curl -X POST 'http://127.0.0.1:5000/quizzes' -H 'Content-Type: application/json' -d '{"previous_questions": [23, 12], "quiz_category":{"id":"4", "type":"History"}}'`
+
+
+### Authors
+UAnjali
+Celestine Okonkwo
+
+
+### Acknowledgment
+Amazing ALX and Udacity Teams, Special thanks to Coach Caryn and Blessing Odede.
+
    
