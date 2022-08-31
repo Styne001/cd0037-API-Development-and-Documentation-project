@@ -1,10 +1,35 @@
-## API Reference
+# THE TRIVIA APP
 
-### Introduction
+## Introduction
 
 Trivia App offers interesting gaming experience for playing the trivia game with friends, family and colleagues. The API follows the REpresentational State Transfer architectural style (RESTful), all data transfers conform to HTTP/1.1.
 
-### Getting Started
+
+## Getting Started
+
+### Pre-requisites and Local Development
+- Developers who wish to use this project should have Python3, pip and node installed on their local machines. Here is a link to download Python `www.python.org/downloads`.
+
+### Backend
+- From the backend folder run pip install requirements.txt to get all the required packages in the requirements file.
+
+- To run the application run the following commands:
+    ```
+    export FLASK_APP=flaskr
+    export FLASK_DEBUG=True
+    flask run
+    ```
+The application is run on `http://127.0.0.1:5000/` by default and is a proxy to the frontend.
+
+### Frontend
+- From the frontend folder, run the following commands to start the client:
+    ```
+    npm install // just once to install dependencies
+    npm start // to start the client
+    ```
+
+
+## API Reference
 - Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration. 
 - Authentication: This version of the application does not require authentication or API keys.
 
