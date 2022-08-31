@@ -43,7 +43,7 @@ Trivia app uses conventional HTTP response code to indicate success and failure 
     "message": "bad request"
 }
 
-Here are some error codes;
+Here are some status codes;
 - 200 - Ok Everything works as expected.
 - 400 - Bad Request The request was not accepted which may be due to wrong or unaccepted request.
 - 404 -Not Found The requested resource does not exist.
