@@ -275,7 +275,6 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
             
             # format selected question
             question = random_question.format()
-            print(question)
 
             return jsonify({
                 'success': True,
