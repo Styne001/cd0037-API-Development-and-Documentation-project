@@ -247,24 +247,35 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
 
         try:
             body = request.get_json()
-            previous_questions = body.get('previous_questions')
-            quiz_category = body.get('quiz_category')
+            previous_questions = body.get('previous_questions', None)
+            quiz_category = body.get('quiz_category', None)
+
+            # If previous_questions does not exist, create an empty list for previous_questions
+            if previous_questions is None:
+                previous_questions = []
 
             if quiz_category is None:
                 selection = Question.query.all()
             # Get all questions not in previous questions if no category is selected
-            elif quiz_category['id'] == 0:
+            if quiz_category['id'] == 0:
                 selection = Question.query.filter(Question.id.notin_(previous_questions)).all()
             # If Category is selected, get questions in that category that is not in previous questions
             else:
                 selection = Question.query.filter(Question.category==quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
-            # This selects a question at random
-            random_question = random.choice(selection)
+            
+            # If all questions in same category are in previous_questions, question = None
+            if not selection:
+                question = None
+                return jsonify({
+                    'success': True
+                })
+            else:
+                # This selects a question at random
+                random_question = random.choice(selection)
+            
             # format selected question
             question = random_question.format()
-            # If previous_questions does not exist, create an empty list for previous_questions
-            if previous_questions is None:
-                previous_questions = []
+            print(question)
 
             return jsonify({
                 'success': True,
