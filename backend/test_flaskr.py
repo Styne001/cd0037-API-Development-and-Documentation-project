@@ -78,14 +78,14 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_question(self):
         """Test delete question"""
-        res = self.client().delete('/questions/6')
+        res = self.client().delete('/questions/4')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 6).one_or_none()
+        question = Question.query.filter(Question.id==4).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['deleted'], 2)
+        self.assertTrue(data['deleted'])
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -243,14 +243,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    '''def test_error_404_play_quiz(self):
+    def test_error_404_play_quiz(self):
         new_quiz = { 'previous_questions': {},'quiz_category': {'type': 'History', 'id': 4}}
         res = self.client().get('/quizzes', json=new_quiz)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 405)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'method not allowed')'''
+        self.assertEqual(data['message'], 'method not allowed')
 
 
 # Make the tests conveniently executable
