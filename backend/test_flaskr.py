@@ -78,10 +78,10 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_question(self):
         """Test delete question"""
-        res = self.client().delete('/questions/4')
+        res = self.client().delete('/questions/9')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id==4).one_or_none()
+        question = Question.query.filter(Question.id==9).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
@@ -209,10 +209,9 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post('/quizzes', json=new_quiz)
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['previous_questions'])
-        self.assertTrue(data['question'])
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
 
     def test_play_quiz_without_previous_questions(self):
         new_quiz = { 'previous_questions': {},'quiz_category': {'type': 'History', 'id': 4}}
@@ -225,14 +224,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['question'])
 
     def test_play_quiz_without_previous_questions_and_quiz_category(self):
-        new_quiz = { 'previous_questions': {}}
+        new_quiz = { 'previous_questions': {}, 'quiz_category': {}}
         res = self.client().post('/quizzes', json=new_quiz)
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertFalse(data['previous_questions'])
-        self.assertTrue(data['question'])
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
 
     def test_error_404_play_quiz(self):
         new_quiz = { 'previous_questions': {},'quiz_category': {'type': 'History', 'id': 4}}
@@ -243,7 +241,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    def test_error_404_play_quiz(self):
+    def test_error_405_play_quiz(self):
         new_quiz = { 'previous_questions': {},'quiz_category': {'type': 'History', 'id': 4}}
         res = self.client().get('/quizzes', json=new_quiz)
         data = json.loads(res.data)
