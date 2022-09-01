@@ -48,12 +48,12 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
     Create an endpoint to handle GET requests
     for all available categories.
     """
-    @app.route('/categories')
+    @app.route('/categories', methods=['GET'])
     @cross_origin()
     def retrieve_categories():
         # Implement pagniation
         categories = Category.query.all()
-        formatted_categories = [category.format() for category in categories]
+        formatted_categories = {category.id: category.type for category in categories}
         
         # If the query returns nothing for categories abort and show error 404
         if len(categories) is None:
@@ -184,18 +184,19 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
     @cross_origin()
     def search_question():
         body = request.get_json()
-        search = body.get('search_term', None)
+        search = body.get('searchTerm', None)
 
         try:
             # Get questions having the search term as part of their string
-            selection = Question.query.distinct(Question.question).filter(Question.question.ilike('%{}%'.format(search)))
+            selection = Question.query.distinct(Question.question).filter(Question.question.ilike('%{}%'.format(search))).all()
             #paginate search_query
             current_question = paginate_questions(request, selection)
             # return search results
             return jsonify({
                 'success': True,
                 'questions': current_question,
-                'total_questions': len(selection.all())
+                'search_term': search,
+                'total_questions': len(selection)
             })
         except:
             abort(422)
@@ -240,10 +241,10 @@ def create_app(test_config=None):  # sourcery skip: do-not-use-bare-except
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-  
     @app.route('/quizzes', methods=['POST'])
     @cross_origin()
     def quiz_game():
+
         try:
             body = request.get_json()
             previous_questions = body.get('previous_questions')

@@ -358,7 +358,7 @@ Here are some status codes;
 #### POST /questions/search
 - General:
     - Retrieves questions with search term as part of the string in the question. Returns success value, total questions, and question list with search term as part of the question string. 
-- Sample: `curl -X POST -H "Content-Type: application/json" -d '{"search_term": "india"}' http://127.0.0.1:5000/questions/search`
+- Sample: `curl -X POST -H "Content-Type: application/json" -d '{"searchTerm": "india"}' http://127.0.0.1:5000/questions/search`
 ``` {
     "questions": [
         {
